@@ -52,6 +52,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
     boolean ispowerball = false;
     boolean autoplay = true;
     boolean RandomBLabel = false;
+    boolean brickhit = false;
 
     int specialCount = 0;
 
@@ -61,6 +62,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
     int TeleportXmax = 925;
     int TeleportXmin = 0;
     // Brick test;
+
 
     ArrayList<Brick> bricks = new ArrayList<Brick>();
     //ArrayList<Brick> IndestructableBrick = new ArrayList<Brick>();
@@ -599,9 +601,6 @@ specialCount = 0;
                         bricks.get(i).Draw(g);
                         bricks.get(i).Label(g);
                     }
-
-
-
             }
             else {
                 bricks.get(i).Draw(g);
@@ -623,14 +622,10 @@ specialCount = 0;
                         }
                         Main.WaitToTeleport = true;
                     }
-                    /*if (Main.WaitToTeleport) {
-                        Main.teleport = false;
-                    }
-                    */
                 }
             }
 
-            /*if(ballHitbox.intersects(bricks.get(i).Hitbox))
+            /*if(ballHitbox.intersects(bricks.get(i).Hitbox) && bricks.get(i).bricktype == BrickType.TeleportationBrick)
             {
                 bricks.get(i).Label(g);
             }*/
@@ -771,6 +766,7 @@ specialCount = 0;
         }
 
         for (int i = 0; i < bricks.size(); i++) {
+
             bricks.get(i).Update();
             if (ballHitbox.intersects(bricks.get(i).Hitbox)) {
 
@@ -783,7 +779,6 @@ specialCount = 0;
                 if(bricks.get(i).bricktype == BrickType.TeleportationBrick)
                 {
                     score++;
-                    bricks.get(i).Layers--;
                 }
 
                 if(bricks.get(i).bricktype == BrickType.SlowerBallBrick)
