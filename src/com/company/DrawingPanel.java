@@ -15,9 +15,12 @@ import java.util.Random;
  * Created by ElysiaLopez on 10/9/2015.
  * TODO: Create Trampoline - Lava - Random Bricks || Scrolling Map || Be able to control where ball is launched || Work on pause function
  * Bugs: Teleportation brick lives & labeling
- * Autoplay & powerup drawing isn't working
- * Only earn a point when destroying a brick, not just hitting it
- * You should only pass a level when all normal bricks are destroyed, not just when brickcount = specialcount
+ * The ball hits each brick twice
+ */
+
+/** FINISHED:
+ * Fixed Indestructible Brick bug
+ *
  */
 public class DrawingPanel extends JPanel implements ActionListener, KeyListener {
 
@@ -556,7 +559,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         }
 
 
-specialCount = 0;
+//specialCount = 0;
     }
 
     @Override
@@ -776,10 +779,6 @@ specialCount = 0;
                     specialCount--;
                 }
                 */
-                if(bricks.get(i).bricktype == BrickType.TeleportationBrick)
-                {
-                    score++;
-                }
 
                 if(bricks.get(i).bricktype == BrickType.SlowerBallBrick)
                 {
