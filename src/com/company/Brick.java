@@ -54,7 +54,6 @@ public class Brick {
         g.drawRect(X, Y, Width, Height);
         Font font = new Font("Segoe WP Black", Font.PLAIN, 20);
         g.setFont(font);
-
     }
 
     public void Label(Graphics g)

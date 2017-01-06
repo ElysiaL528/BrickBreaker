@@ -13,15 +13,14 @@ import java.util.Random;
 
 /**
  * Created by ElysiaLopez on 10/9/2015.
- * TODO: Create Trampoline - Lava - Random Bricks || Scrolling Map || Be able to control where ball is launched || Work on pause function
- * Bugs: Teleportation brick lives & labeling
- * The ball hits each brick twice
+ * TODO: Create Trampoline - Lava - Random Bricks || Scrolling Map || Be able to control where ball is launched || Work on pause function || Upside down mode
+ * Bugs:
+ * The ball hits each brick twice - FIXED
+ * Make a ball class
+ * The ball doesn't bounce when it hits the brick from the top
  */
 
-/** FINISHED:
- * Fixed Indestructible Brick bug
- *
- */
+
 public class DrawingPanel extends JPanel implements ActionListener, KeyListener {
 
     int x = 450;
@@ -540,7 +539,6 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                 for (int col = 0; col < 7; col++) {
 
                     Brick newBrick = new TeleportationBrick(brickX, brickY + 300, brickWidth, brickHeight, xSpeed, ySpeed, Color.green, 0, 0, 5);
-                    bricks.add(newBrick);
                     newBrick.RowID = row;
                     newBrick.ColumnID = col;
                     newBrick.BrickGap = xBrickGap;
@@ -768,34 +766,35 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
         }
 
+        for(Brick brick : bricks)
+        {
+            brick.Update();
+        }
+
         for (int i = 0; i < bricks.size(); i++) {
 
-            bricks.get(i).Update();
             if (ballHitbox.intersects(bricks.get(i).Hitbox)) {
 
                 bricks.get(i).Layers--;
 
-                /*else if (bricks.get(i).bricktype != BrickType.Brick && bricks.get(i).bricktype != BrickType.IndestructableBrick && level != 3 && level != 4 && bricks.get(i).bricktype == BrickType.TeleportationBrick) {
-                    specialCount--;
+                if (!ispowerball) {
+                    if(ballHitbox.intersects(bricks.get(i).TopHitbox))
+                    {
+                        ballYspeed = -Math.abs(ballYspeed);
+                    }
+                    else {
+                        ballYspeed = Math.abs(ballYspeed);
+                    }
                 }
-                */
 
                 if(bricks.get(i).bricktype == BrickType.SlowerBallBrick)
                 {
-                    if(ballXspeed < 0) {
-                        ballXspeed = -5;
-                    }
-                    else{
-                        ballXspeed = 5;
-                    }
-                    if(ballYspeed < 0) {
-                        ballYspeed = -5;
-                    }
-                    else{
-                        ballYspeed = 5;
-                    }
+                    ballXspeed /= 2;
+                    ballYspeed /= 2;
+
                     isSlow = true;
                 }
+
                 if(bricks.get(i).bricktype == BrickType.ShortPaddleBrick)
                 {
                     paddleWidth *= 0.9;
@@ -816,15 +815,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                 {
                     ispowerball = true;
                 }
-                if (!ispowerball) {
-                    if(ballHitbox.intersects(bricks.get(i).TopHitbox))
-                    {
-                        ballYspeed = -Math.abs(ballYspeed);
-                    }
-                    else {
-                        ballYspeed = Math.abs(ballYspeed);
-                    }
-                }
+
                 if(bricks.get(i).bricktype == BrickType.HealthBrick)
                 {
                     lives+=5;
@@ -838,12 +829,13 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                     paddleWidth -= 2;
                     paddleHitbox.width -= 2;
                 }
-                if (bricks.get(i).Layers <= 0 && bricks.get(i).bricktype != BrickType.IndestructableBrick) {
+
+                if (bricks.get(i).Layers <= 0 && bricks.get(i).bricktype != BrickType.IndestructableBrick)
+                {
                     bricks.remove(i);
                     score++;
                     i--;
                 }
-
 
             }
         }
