@@ -15,9 +15,12 @@ import java.util.Random;
  * Created by ElysiaLopez on 10/9/2015.
  * TODO: Create Trampoline - Lava - Random Bricks || Scrolling Map || Be able to control where ball is launched || Work on pause function || Upside down mode
  * Bugs:
- * The ball hits each brick twice - FIXED
  * Make a ball class
  * The ball doesn't bounce when it hits the brick from the top
+ * Special brick bug
+ * Fix slow brick bug
+ * Program faster ball brick
+ * The powerball shouldn't destroy all layers
  */
 
 
@@ -55,6 +58,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
     boolean autoplay = true;
     boolean RandomBLabel = false;
     boolean brickhit = false;
+    boolean intersectingBrick = false;
 
     int specialCount = 0;
 
@@ -63,10 +67,12 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
     int TeleportXmax = 925;
     int TeleportXmin = 0;
-    // Brick test;
+
+
 
 
     ArrayList<Brick> bricks = new ArrayList<Brick>();
+
     //ArrayList<Brick> IndestructableBrick = new ArrayList<Brick>();
 
     Brick exmaple = new IndestructableBrick(0, 0, 120, 40, 0, 0, Color.GREEN, 43, 0, 10);
@@ -538,7 +544,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             for (int row = 0; row < 2; row++) {
                 for (int col = 0; col < 7; col++) {
 
-                    Brick newBrick = new TeleportationBrick(brickX, brickY + 300, brickWidth, brickHeight, xSpeed, ySpeed, Color.green, 0, 0, 5);
+                    Brick newBrick = new TeleportationBrick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, Color.green, 0, 0, 5);
                     newBrick.RowID = row;
                     newBrick.ColumnID = col;
                     newBrick.BrickGap = xBrickGap;
@@ -555,10 +561,108 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             //Main.TeleportTimer.start();
             Main.TeleportWaitTimer.start();
         }
+        if(level == 16)
+        {
+            int xSpeed = 0;
+            int ySpeed = 0;
+            int brickWidth = 120;
+            int brickHeight = 40;
+            int xBrickGap = 10;
+            int yBrickGap = 10;
+            int brickx = 500;
+            int brickY = 0;
+
+            BrickType[] brickTypeArray = {BrickType.DisappearingBrick, BrickType.HealthBrick, BrickType.Brick, BrickType.LongPaddleBrick, BrickType.ShortPaddleBrick};
+
+            for (int row = 0; row < 5; row++) {
+                for (int col = 0; col < 7; col++) {
+
+                    if(row == 0 && col == 0) {
+                        Brick newBrick = new PowerupBrick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, Color.green, 0, 0, 1);
+                        newBrick.RowID = row;
+                        newBrick.ColumnID = col;
+                        newBrick.BrickGap = xBrickGap;
+
+                        brickX += brickWidth;
+                        brickX += xBrickGap;
+
+                        bricks.add(newBrick);
+                    }
+                    else {
+                        Random random = new Random();
+
+
+                        RandomBrick newBrick = new RandomBrick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, Color.WHITE, 0, 0, 1);
+
+                        newBrick.bricktype = brickTypeArray[random.nextInt(brickTypeArray.length)];
+
+                        if (newBrick.bricktype == BrickType.DisappearingBrick)
+                        {
+                            newBrick.isDisappearing = true;
+                        }
+                        else
+                        {
+                            newBrick.isDisappearing = false;
+                        }
+
+                        if (newBrick.bricktype == BrickType.HealthBrick)
+                        {
+                            newBrick.isHealth = true;
+                        }
+                        else
+                        {
+                            newBrick.isHealth = false;
+                        }
+
+                        if (newBrick.bricktype == BrickType.ShortPaddleBrick)
+                        {
+                            newBrick.isShortPaddle = true;
+                        }
+                        else
+                        {
+                            newBrick.isShortPaddle = false;
+                        }
+
+                        if (newBrick.bricktype == BrickType.LongPaddleBrick)
+                        {
+                            newBrick.isLongPaddle = true;
+                        }
+                        else
+                        {
+                            newBrick.isLongPaddle = false;
+                        }
+
+                        if (newBrick.bricktype == BrickType.Brick)
+                        {
+                            newBrick.isNormal = true;
+                        }
+                        else
+                        {
+                            newBrick.isNormal = false;
+                        }
+
+                        newBrick.RowID = row;
+                        newBrick.ColumnID = col;
+                        newBrick.BrickGap = xBrickGap;
+
+                        brickX += brickWidth;
+                        brickX += xBrickGap;
+
+                        bricks.add(newBrick);
+
+                    }
+                    }
+                brickY += brickHeight + yBrickGap;
+                brickX = 0;
+                }
+                brickY += brickHeight + yBrickGap;
+                brickX = 0;
+            }
+        }
 
 
 //specialCount = 0;
-    }
+
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
@@ -773,7 +877,8 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
         for (int i = 0; i < bricks.size(); i++) {
 
-            if (ballHitbox.intersects(bricks.get(i).Hitbox)) {
+            if (ballHitbox.intersects(bricks.get(i).Hitbox) && !intersectingBrick)
+            {
 
                 bricks.get(i).Layers--;
 
@@ -795,7 +900,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                     isSlow = true;
                 }
 
-                if(bricks.get(i).bricktype == BrickType.ShortPaddleBrick)
+                if(bricks.get(i).bricktype == BrickType.ShortPaddleBrick && paddleWidth >= 51)
                 {
                     paddleWidth *= 0.9;
                     paddleHitbox.setSize(paddleWidth, paddleHeight);
@@ -804,7 +909,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                 {
 
                 }
-                if(bricks.get(i).bricktype == BrickType.LongPaddleBrick)
+                if(bricks.get(i).bricktype == BrickType.LongPaddleBrick && paddleWidth >= 200)
                 {
                     paddleWidth *= 1.1;
                     paddleHitbox.setSize(paddleWidth, paddleHeight);
@@ -819,7 +924,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                 if(bricks.get(i).bricktype == BrickType.HealthBrick)
                 {
                     lives+=5;
-                    specialCount++;
+                    //specialCount++;
                 }
                 if (/*level == 3 || level == 4*/ bricks.get(i).bricktype == BrickType.ShrinkBPBrick) {
                     ballWidth--;
@@ -837,6 +942,11 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                     i--;
                 }
 
+                intersectingBrick = true;
+            }
+            else
+            {
+                intersectingBrick = false;
             }
         }
 
@@ -904,6 +1014,11 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         quickAccessKeys.put(KeyEvent.VK_E, 13);
         quickAccessKeys.put(KeyEvent.VK_T, 14);
         quickAccessKeys.put(KeyEvent.VK_Y, 15);
+        quickAccessKeys.put(KeyEvent.VK_U, 16);
+        quickAccessKeys.put(KeyEvent.VK_I, 17);
+        quickAccessKeys.put(KeyEvent.VK_O, 18);
+        quickAccessKeys.put(KeyEvent.VK_P, 19);
+        quickAccessKeys.put(KeyEvent.VK_A, 20);
 
         if(quickAccessKeys.containsKey(e.getKeyCode()))
         {
