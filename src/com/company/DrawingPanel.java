@@ -15,19 +15,22 @@ import java.util.Random;
  * Created by ElysiaLopez on 10/9/2015.
  * TODO: Create Trampoline - Lava - Random Bricks || Scrolling Map || Be able to control where ball is launched || Work on pause function || Upside down mode
  * Bugs:
- * Make a ball class
- * The ball doesn't bounce when it hits the brick from the top
- * Special brick bug
- * Fix slow brick bug
- * Program faster ball brick
- * The powerball shouldn't destroy all layers
+ * Make a ball class - DONE
+ * The ball doesn't bounce when it hits the brick from the top - DONE
+ * Special brick bug - FIXED
+ * Fix slow brick bug - FIXED
+ * Program faster ball brick - DONE
+ * The powerball shouldn't destroy all layers - DONE
+ * Have the intersecting logic internal to the corresponding brick class, rather than all in the drawing panel
  */
 
 
 public class DrawingPanel extends JPanel implements ActionListener, KeyListener {
 
-    int x = 450;
-    int y = 400;
+    Ball ball;
+
+    int PaddleX = 450;
+    int PaddleY = 400;
     int ballX = 500;
     int ballY = 350;
     int ballXspeed = 10;
@@ -44,7 +47,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
     Random gen = new Random();
     public int score = 0;
     int lives = 100;
-    int level = 9;
+    int level = 8;
     int layers = 1;
 
     boolean right = false;
@@ -54,11 +57,12 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
     boolean isFast = false;
     boolean isShort = false;
     boolean isLong = false;
-    boolean ispowerball = false;
+    boolean ispowerball = true;
     boolean autoplay = true;
     boolean RandomBLabel = false;
     boolean brickhit = false;
     boolean intersectingBrick = false;
+    boolean FinishedLevel = false;
 
     int specialCount = 0;
 
@@ -78,7 +82,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
     Brick exmaple = new IndestructableBrick(0, 0, 120, 40, 0, 0, Color.GREEN, 43, 0, 10);
 
 
-    Rectangle paddleHitbox = new Rectangle(x, y, paddleWidth, paddleHeight);
+    Rectangle paddleHitbox = new Rectangle(PaddleX, PaddleY, paddleWidth, paddleHeight);
     Rectangle ballHitbox = new Rectangle(ballX, ballY, ballWidth, ballHeight);
 
     //Color[] columnColors = {Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN, Color.PINK, Color.white};
@@ -122,9 +126,13 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
     public void Reset() {
         brickX = 0;
         brickY = 0;
-        ispowerball = false;
+        //ispowerball = false;
         specialCount = 0;
         paddleWidth = 150;
+        ballYspeed = 10;
+        ballXspeed = 10;
+        FinishedLevel = false;
+
         paddleHitbox.setSize(paddleWidth, paddleHeight);
 
         if (level == -1) {
@@ -331,7 +339,6 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                         Brick newBrick = new Brick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, columnColors[col], 0, 300, 8);
                         if (row == 0 && col == 0) {
                             newBrick = new PowerupBrick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, Color.magenta, 0, 300, 8);
-                            specialCount++;
                         }
                         newBrick.RowID = row;
                         newBrick.ColumnID = col;
@@ -407,7 +414,6 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                         bricks.add(newDisappearingBrick);
                         brickX += brickWidth;
                         brickX += xBrickGap;
-                        specialCount++;
                     } else if (row <= 2) {
                         Brick newBrick = new HealthBrick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, Color.red, 0, 0, 1);
                         newBrick.RowID = row;
@@ -442,7 +448,6 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                         bricks.add(newIBrick);
                         brickX += brickWidth;
                         brickX += xBrickGap;
-                        specialCount++;
                     } else {
                         Brick newBrick = new Brick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, Color.GREEN, 0, 0, 1);
                         newBrick.RowID = row;
@@ -477,7 +482,6 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                         bricks.add(newIBrick);
                         brickX += brickWidth;
                         brickX += xBrickGap;
-                        specialCount++;
                     } else {
                         Brick newBrick = new Brick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, Color.GREEN, 0, 0, 1);
                         newBrick.RowID = row;
@@ -512,7 +516,6 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                         bricks.add(newIBrick);
                         brickX += brickWidth;
                         brickX += xBrickGap;
-                        specialCount++;
                     } else {
                         Brick newBrick = new Brick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, Color.GREEN, 0, 0, 1);
                         newBrick.RowID = row;
@@ -658,7 +661,53 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                 brickY += brickHeight + yBrickGap;
                 brickX = 0;
             }
+        if(level == 17)
+        {
+            int xSpeed = 0;
+            int ySpeed = 0;
+            int brickWidth = 120;
+            int brickHeight = 40;
+            int xBrickGap = 10;
+            int yBrickGap = 10;
+            int brickx = 500;
+            int brickY = 0;
+
+            for (int row = 0; row < 5; row++) {
+                for (int col = 0; col < 7; col++) {
+
+                    if(row == 0) {
+                        Brick newBrick = new FasterBallBrick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, Color.red, 0, 0, 1);
+
+
+                        newBrick.RowID = row;
+                        newBrick.ColumnID = col;
+                        newBrick.BrickGap = xBrickGap;
+
+                        brickX += brickWidth + xBrickGap;
+
+                        bricks.add(newBrick);
+                    }
+                    else{
+                        Brick newBrick = new Brick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, Color.green, 0, 0, 1);
+
+                        newBrick.RowID = row;
+                        newBrick.ColumnID = col;
+                        newBrick.BrickGap = xBrickGap;
+
+                        brickX += brickWidth + xBrickGap;
+
+                        bricks.add(newBrick);
+                    }
+
+                    }
+                brickY += brickHeight + yBrickGap;
+                brickX = 0;
+                }
+
+            }
+
         }
+
 
 
 //specialCount = 0;
@@ -675,25 +724,29 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         super.paintComponent(g);
 
         g.setColor(Color.green);
-        if (!ispowerball) {
+
+        ball = new Ball(PaddleX + (paddleWidth/2), PaddleY, 50, 50);
+        ball.Draw(g);
+
+        /*if (!ispowerball) {
             g.drawOval(ballX, ballY, ballWidth, ballHeight);
             g.drawOval(ballHitbox.x, ballHitbox.y, ballHitbox.width, ballHitbox.height);
         } else{
             g.fillOval(ballX, ballY, ballWidth, ballHeight);
-        }
+        }*/
         if(!autoplay) {
             g.setColor(Color.GREEN);
-            g.drawRect(x, y, paddleWidth, paddleHeight);
+            g.drawRect(PaddleX, PaddleY, paddleWidth, paddleHeight);
             g.drawRect(paddleHitbox.x, paddleHitbox.y, paddleHitbox.width, paddleHitbox.height);
         }
         else{
             g.setColor(Color.red);
-            g.drawRect(x, y, paddleWidth, paddleHeight);
+            g.drawRect(PaddleX, PaddleY, paddleWidth, paddleHeight);
             g.drawRect(paddleHitbox.x, paddleHitbox.y, paddleHitbox.width, paddleHitbox.height);
         }
         //test.Draw(g);
         for (int i = 0; i < bricks.size(); i++) {
-            if(level == 11)
+            if(level == 11 || level == 16)
             {
 
                     if(bricks.get(i).bricktype == BrickType.DisappearingBrick) {
@@ -719,9 +772,11 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                         for (int j = 0; j < bricks.size(); j++) {
                             randomNum = gen.nextInt(7) * 130;
                             bricks.get(j).X = randomNum;
+                            bricks.get(j).TopHitbox.x = randomNum;
                             bricks.get(j).Hitbox.x = randomNum;
                             randomNum = gen.nextInt(6) * 50;
                             bricks.get(j).Y = randomNum;
+                            bricks.get(j).TopHitbox.y = randomNum;
                             bricks.get(j).Hitbox.y = randomNum;
 
                         }
@@ -749,6 +804,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         }
         if (bricks.isEmpty() || bricks.size() == specialCount) {
             isonpaddle = true;
+            FinishedLevel = true;
 
             font = new Font("Quartz MS", Font.PLAIN, 100);
             g.setFont(font);
@@ -770,7 +826,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
         g.drawString(String.format("Lives:%d", lives), 0, 450);
         g.drawString(String.format("Level:%d", level), 800, 450);
-        g.drawString(String.format("Special Count: %d, %d", specialCount, bricks.size()), 300, 450);
+        g.drawString(String.format("Ball speed: %d, %d", ballXspeed, ballYspeed), 300, 450);
     }
 
     public void Update() {
@@ -778,14 +834,14 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         //moving
 
         if (right) {
-            x += paddleXspeed;
+            PaddleX += paddleXspeed;
         }
         if (left) {
-            x -= paddleXspeed;
+            PaddleX -= paddleXspeed;
         }
         if (isonpaddle) {
-            ballX = x + (paddleWidth / 2) - (ballWidth / 2);
-            ballY = y - ballHeight;
+            ball.X = PaddleX + (paddleWidth / 2) - (ball.Width / 2);
+            ball.Y = PaddleY - ball.Height;
         }
         /*if(isonpaddle == false)
         {
@@ -803,12 +859,12 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         }*/
 
         else if (!isonpaddle) {
-            ballX += ballXspeed;
-            ballY += ballYspeed;
+            ball.X += ball.Xspeed;
+            ball.Y += ball.Yspeed;
         }
 
-        ballHitbox.setLocation(ballX, ballY);
-        paddleHitbox.x = x;
+        ball.Hitbox.setLocation(ball.X, ball.Y);
+        paddleHitbox.x = PaddleX;
         /*
         if(isonpaddle == true)
         {
@@ -825,17 +881,15 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         */
         if(autoplay)
         {
-            x = ballX;
-
-
+            PaddleX = ball.X;
         }
-        if (ballX >= 950) {
-            ballXspeed = Math.abs(ballXspeed) * -1;
+        if (ball.X >= 950) {
+            ball.Xspeed = Math.abs(ball.Xspeed) * -1;
         }
-        if (ballX <= 0) {
-            ballXspeed = Math.abs(ballXspeed);
+        if (ball.X <= 0) {
+            ball.Xspeed = Math.abs(ball.Xspeed);
         }
-        if (ballY >= 425) {
+        if (ball.Y >= 425) {
             //ballYspeed = Math.abs(ballYspeed) * -1;
             isonpaddle = true;
             lives--;
@@ -848,25 +902,19 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             paddleHitbox.setSize(paddleWidth, paddleHeight);
         }
 
-        if (ballY <= 0) {
-            ballYspeed = Math.abs(ballYspeed);
+        if (ball.Y <= 0) {
+            ball.Yspeed = Math.abs(ball.Yspeed);
         }
 
-        if (x + paddleWidth >= 970) {
-            x = 1000-paddleWidth-17;
+        if (PaddleX + paddleWidth >= 970) {
+            PaddleX = 1000-paddleWidth-17;
         }
 
-        if (x <= 0) {
-            x = 2;
+        if (PaddleX <= 0) {
+            PaddleX = 2;
         }
-        if (ballHitbox.intersects(paddleHitbox)) {
-            if(!isSlow) {
-                ballYspeed = -10;
-            }
-            else if(isSlow)
-            {
-                ballYspeed = -5;
-            }
+        if (ball.Hitbox.intersects(paddleHitbox)) {
+            ball.Yspeed = -Math.abs(ball.Yspeed);
 
         }
 
@@ -877,27 +925,65 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
         for (int i = 0; i < bricks.size(); i++) {
 
-            if (ballHitbox.intersects(bricks.get(i).Hitbox) && !intersectingBrick)
+            if (ball.Hitbox.intersects(bricks.get(i).Hitbox))
             {
 
-                bricks.get(i).Layers--;
 
+                if(!bricks.get(i).intersectingBall) {
+                    bricks.get(i).Layers--;
+                }
+                bricks.get(i).intersectingBall = true;
                 if (!ispowerball) {
-                    if(ballHitbox.intersects(bricks.get(i).TopHitbox))
+                    if(ball.Hitbox.intersects(bricks.get(i).TopHitbox))
                     {
-                        ballYspeed = -Math.abs(ballYspeed);
+                        ball.Yspeed = -Math.abs(ball.Yspeed);
                     }
                     else {
-                        ballYspeed = Math.abs(ballYspeed);
+                        ball.Yspeed = Math.abs(ball.Yspeed);
                     }
                 }
 
+
                 if(bricks.get(i).bricktype == BrickType.SlowerBallBrick)
                 {
-                    ballXspeed /= 2;
-                    ballYspeed /= 2;
+                    if(ball.Xspeed >= 1 && ball.Yspeed >= 1) {
+                        ball.Xspeed /= 2;
+                        ball.Yspeed /= 2;
 
-                    isSlow = true;
+                        isSlow = true;
+                    }
+                }
+
+                if(bricks.get(i).bricktype == BrickType.FasterBallBrick)
+                {
+                    int speedIncrement = 2;
+                    if(Math.abs(ball.Xspeed) <= 20 && Math.abs(ball.Yspeed) <= 20)
+                    {
+                        if(paddleXspeed >= 0) {
+                            paddleXspeed += speedIncrement;
+                        }
+                        else
+                        {
+                            paddleXspeed -= speedIncrement;
+                        }
+
+                        if(ballXspeed >= 0) {
+                            ball.Xspeed += speedIncrement;
+                        }
+                        else
+                        {
+                            ball.Xspeed -= speedIncrement;
+                        }
+
+                        if(ball.Yspeed >= 0)
+                        {
+                            ball.Yspeed += speedIncrement;
+                        }
+                        else
+                        {
+                            ball.Yspeed -= speedIncrement;
+                        }
+                    }
                 }
 
                 if(bricks.get(i).bricktype == BrickType.ShortPaddleBrick && paddleWidth >= 51)
@@ -927,14 +1013,13 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                     //specialCount++;
                 }
                 if (/*level == 3 || level == 4*/ bricks.get(i).bricktype == BrickType.ShrinkBPBrick) {
-                    ballWidth--;
-                    ballHeight--;
-                    ballHitbox.width--;
-                    ballHitbox.height--;
+                    ball.Width--;
+                    ball.Height--;
+                    ball.Hitbox.width--;
+                    ball.Hitbox.height--;
                     paddleWidth -= 2;
                     paddleHitbox.width -= 2;
                 }
-
                 if (bricks.get(i).Layers <= 0 && bricks.get(i).bricktype != BrickType.IndestructableBrick)
                 {
                     bricks.remove(i);
@@ -942,11 +1027,10 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                     i--;
                 }
 
-                intersectingBrick = true;
             }
             else
             {
-                intersectingBrick = false;
+                bricks.get(i).intersectingBall = false;
             }
         }
 
@@ -964,17 +1048,17 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         }
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             if (left) {
-                ballXspeed = -Math.abs(ballXspeed);
+                ball.Xspeed = -Math.abs(ball.Xspeed);
             }
             if (right) {
-                ballXspeed = Math.abs(ballXspeed);
+                ball.Xspeed = Math.abs(ball.Xspeed);
             }
             isonpaddle = false;
 
         }
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 
-            if (bricks.isEmpty() || bricks.size() == specialCount) {
+            if (FinishedLevel) {
                 bricks.clear();
                 level++;
                 lives += 5;
@@ -989,6 +1073,17 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                     Reset();
 
             }*/
+        }
+        if(e.getKeyCode() == KeyEvent.VK_UP)
+        {
+            if(ispowerball)
+            {
+                ispowerball = false;
+            }
+            else
+            {
+                ispowerball = true;
+            }
         }
 
         checkShortcutKeys(e);
