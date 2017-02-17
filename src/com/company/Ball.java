@@ -16,6 +16,7 @@ public class Ball {
     public Rectangle Hitbox;
 
     public boolean BallIntersectingBrick = false;
+    public boolean ispowerball = false;
 
     public Ball(int x, int y, int width, int height)
     {
@@ -23,11 +24,17 @@ public class Ball {
         Y = y;
         Width = width;
         Height = height;
+        Hitbox = new Rectangle(X, Y, Width, Height);
     }
 
     public void Draw(Graphics g)
     {
-        g.drawOval(X, Y, Width, Height);
+        if(ispowerball) {
+            g.fillOval(X, Y, Width, Height);
+        }
+        else{
+            g.drawOval(X, Y, Width, Height);
+        }
     }
 
     public void Update()

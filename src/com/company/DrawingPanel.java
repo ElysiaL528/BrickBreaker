@@ -15,31 +15,16 @@ import java.util.Random;
  * Created by ElysiaLopez on 10/9/2015.
  * TODO: Create Trampoline - Lava - Random Bricks || Scrolling Map || Be able to control where ball is launched || Work on pause function || Upside down mode
  * Bugs:
- * Make a ball class - DONE
- * The ball doesn't bounce when it hits the brick from the top - DONE
- * Special brick bug - FIXED
- * Fix slow brick bug - FIXED
- * Program faster ball brick - DONE
- * The powerball shouldn't destroy all layers - DONE
  * Have the intersecting logic internal to the corresponding brick class, rather than all in the drawing panel
+ *
+ * DONE:
+ * Fixed ball positioning bug
  */
 
 
 public class DrawingPanel extends JPanel implements ActionListener, KeyListener {
 
-    Ball ball;
 
-    int PaddleX = 450;
-    int PaddleY = 400;
-    int ballX = 500;
-    int ballY = 350;
-    int ballXspeed = 10;
-    int ballYspeed = 10;
-    int ballHeight = 50;
-    int ballWidth = 50;
-    int paddleXspeed = 15;
-    int paddleHeight = 15;
-    int paddleWidth = 150;
     int brickWidth = 120;
     int brickHeight = 40;
     int brickX = 0;
@@ -57,7 +42,6 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
     boolean isFast = false;
     boolean isShort = false;
     boolean isLong = false;
-    boolean ispowerball = true;
     boolean autoplay = true;
     boolean RandomBLabel = false;
     boolean brickhit = false;
@@ -81,9 +65,12 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
     Brick exmaple = new IndestructableBrick(0, 0, 120, 40, 0, 0, Color.GREEN, 43, 0, 10);
 
+    Ball ball = new Ball(500, 350, 50, 50);
+    Paddle paddle = new Paddle(450, 400, 150, 15);
 
-    Rectangle paddleHitbox = new Rectangle(PaddleX, PaddleY, paddleWidth, paddleHeight);
-    Rectangle ballHitbox = new Rectangle(ballX, ballY, ballWidth, ballHeight);
+
+    //Rectangle paddleHitbox = new Rectangle(PaddleX, PaddleY, paddleWidth, paddleHeight);
+    //Rectangle ballHitbox = new Rectangle(ballX, ballY, ballWidth, ballHeight);
 
     //Color[] columnColors = {Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN, Color.PINK, Color.white};
     Color[] columnColors = {Color.green, Color.green, Color.green, Color.green, Color.green, Color.green, Color.green};
@@ -128,12 +115,12 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         brickY = 0;
         //ispowerball = false;
         specialCount = 0;
-        paddleWidth = 150;
-        ballYspeed = 10;
-        ballXspeed = 10;
+        paddle.Width = 150;
+        ball.Yspeed = 10;
+        ball.Xspeed = 10;
         FinishedLevel = false;
 
-        paddleHitbox.setSize(paddleWidth, paddleHeight);
+        paddle.Hitbox.setSize(paddle.Width, paddle.Height);
 
         if (level == -1) {
             int xSpeed = 0;
@@ -183,14 +170,14 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             }
         } else if (level == 3) {
             score = 64;
-            ballWidth = 50;
-            ballHeight = 50;
-            ballHitbox.width = ballWidth;
-            ballHitbox.height = ballHeight;
-            paddleHeight = 15;
-            paddleWidth = 150;
-            paddleHitbox.width = paddleWidth;
-            paddleHitbox.height = paddleHeight;
+            ball.Width = 50;
+            ball.Height = 50;
+            ball.Hitbox.width = ball.Width;
+            ball.Hitbox.height = ball.Height;
+            paddle.Height = 15;
+            paddle.Width = 150;
+            paddle.Hitbox.width = paddle.Width;
+            paddle.Hitbox.height = paddle.Height;
             for (int j = 0; j < 4; j++) {
                 for (int i = 0; i < 8; i++) {
                     bricks.add(new ShrinkBPBrick(brickX, brickY, 120, 40, 0, 0, Color.GREEN, 43, 0, 1));
@@ -201,14 +188,14 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             }
         } else if (level == 4) {
             score = 96;
-            ballWidth = 60;
-            ballHeight = 60;
-            ballHitbox.width = ballWidth;
-            ballHitbox.height = ballHeight;
-            paddleHeight = 15;
-            paddleWidth = 150;
-            paddleHitbox.width = paddleWidth;
-            paddleHitbox.height = paddleHeight;
+            ball.Width = 60;
+            ball.Height = 60;
+            ball.Hitbox.width = ball.Width;
+            ball.Hitbox.height = ball.Height;
+            paddle.Height = 15;
+            paddle.Width = 150;
+            paddle.Hitbox.width = paddle.Width;
+            paddle.Hitbox.height = paddle.Height;
             for (int j = 0; j < 1; j++) {
                 for (int i = 0; i < 8; i++) {
                     bricks.add(new ShrinkBPBrick(brickX, brickY, 120, 40, 0, 0, Color.GREEN, 43, 0, 1));
@@ -219,14 +206,14 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             }
         } else if (level == 5) {
             score = 104;
-            ballWidth = 50;
-            ballHeight = 50;
-            ballHitbox.width = ballWidth;
-            ballHitbox.height = ballHeight;
-            paddleHeight = 15;
-            paddleWidth = 150;
-            paddleHitbox.width = paddleWidth;
-            paddleHitbox.height = paddleHeight;
+            ball.Width = 50;
+            ball.Height = 50;
+            ball.Hitbox.width = ball.Width;
+            ball.Hitbox.height = ball.Height;
+            paddle.Height = 15;
+            paddle.Width = 150;
+            paddle.Hitbox.width = paddle.Width;
+            paddle.Hitbox.height = paddle.Height;
             int xSpeed = 5;
             int ySpeed = 0;
             int brickWidth = 120;
@@ -725,8 +712,8 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
         g.setColor(Color.green);
 
-        ball = new Ball(PaddleX + (paddleWidth/2), PaddleY, 50, 50);
         ball.Draw(g);
+        paddle.Draw(g);
 
         /*if (!ispowerball) {
             g.drawOval(ballX, ballY, ballWidth, ballHeight);
@@ -734,7 +721,8 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         } else{
             g.fillOval(ballX, ballY, ballWidth, ballHeight);
         }*/
-        if(!autoplay) {
+
+       /* if(!autoplay) {
             g.setColor(Color.GREEN);
             g.drawRect(PaddleX, PaddleY, paddleWidth, paddleHeight);
             g.drawRect(paddleHitbox.x, paddleHitbox.y, paddleHitbox.width, paddleHitbox.height);
@@ -743,7 +731,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             g.setColor(Color.red);
             g.drawRect(PaddleX, PaddleY, paddleWidth, paddleHeight);
             g.drawRect(paddleHitbox.x, paddleHitbox.y, paddleHitbox.width, paddleHitbox.height);
-        }
+        }*/
         //test.Draw(g);
         for (int i = 0; i < bricks.size(); i++) {
             if(level == 11 || level == 16)
@@ -826,37 +814,23 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
         g.drawString(String.format("Lives:%d", lives), 0, 450);
         g.drawString(String.format("Level:%d", level), 800, 450);
-        g.drawString(String.format("Ball speed: %d, %d", ballXspeed, ballYspeed), 300, 450);
+        g.drawString(String.format("Ball speed: %d, %d", ball.Xspeed, ball.Yspeed), 300, 450);
     }
 
     public void Update() {
 
         //moving
 
-        if (right) {
+        /*if (right) {
             PaddleX += paddleXspeed;
         }
         if (left) {
             PaddleX -= paddleXspeed;
-        }
-        if (isonpaddle) {
-            ball.X = PaddleX + (paddleWidth / 2) - (ball.Width / 2);
-            ball.Y = PaddleY - ball.Height;
-        }
-        /*if(isonpaddle == false)
-        {
-            ballX -=10;
-            ballY -=10;
-
-        }
-        if(isonpaddle)
-        {
-            ballX += 50;
-        }
-        if(isonpaddle)
-        {
-            ballX -= 50;
         }*/
+        if (isonpaddle) {
+            ball.X = paddle.X + (paddle.Width / 2) - (ball.Width/2);
+            ball.Y = paddle.Y - ball.Height;
+        }
 
         else if (!isonpaddle) {
             ball.X += ball.Xspeed;
@@ -864,7 +838,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         }
 
         ball.Hitbox.setLocation(ball.X, ball.Y);
-        paddleHitbox.x = PaddleX;
+        paddle.Hitbox.x = paddle.X;
         /*
         if(isonpaddle == true)
         {
@@ -881,7 +855,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         */
         if(autoplay)
         {
-            PaddleX = ball.X;
+            paddle.X = ball.X;
         }
         if (ball.X >= 950) {
             ball.Xspeed = Math.abs(ball.Xspeed) * -1;
@@ -893,29 +867,28 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             //ballYspeed = Math.abs(ballYspeed) * -1;
             isonpaddle = true;
             lives--;
-            ispowerball = false;
+            ball.ispowerball = false;
             isSlow = false;
             isShort = false;
             isLong = false;
             isFast = false;
-            paddleWidth = 150;
-            paddleHitbox.setSize(paddleWidth, paddleHeight);
+            paddle.Width = 150;
+            paddle.Hitbox.setSize(paddle.Width, paddle.Height);
         }
 
         if (ball.Y <= 0) {
             ball.Yspeed = Math.abs(ball.Yspeed);
         }
 
-        if (PaddleX + paddleWidth >= 970) {
-            PaddleX = 1000-paddleWidth-17;
+        if (paddle.X + paddle.Width >= 970) {
+            paddle.X = 1000-paddle.Width-17;
         }
 
-        if (PaddleX <= 0) {
-            PaddleX = 2;
+        if (paddle.X <= 0) {
+            paddle.X = 2;
         }
-        if (ball.Hitbox.intersects(paddleHitbox)) {
+        if (ball.Hitbox.intersects(paddle.Hitbox)) {
             ball.Yspeed = -Math.abs(ball.Yspeed);
-
         }
 
         for(Brick brick : bricks)
@@ -933,7 +906,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                     bricks.get(i).Layers--;
                 }
                 bricks.get(i).intersectingBall = true;
-                if (!ispowerball) {
+                if (!ball.ispowerball) {
                     if(ball.Hitbox.intersects(bricks.get(i).TopHitbox))
                     {
                         ball.Yspeed = -Math.abs(ball.Yspeed);
@@ -959,15 +932,15 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                     int speedIncrement = 2;
                     if(Math.abs(ball.Xspeed) <= 20 && Math.abs(ball.Yspeed) <= 20)
                     {
-                        if(paddleXspeed >= 0) {
-                            paddleXspeed += speedIncrement;
+                        if(paddle.Xspeed >= 0) {
+                            paddle.Xspeed += speedIncrement;
                         }
                         else
                         {
-                            paddleXspeed -= speedIncrement;
+                            paddle.Xspeed -= speedIncrement;
                         }
 
-                        if(ballXspeed >= 0) {
+                        if(ball.Xspeed >= 0) {
                             ball.Xspeed += speedIncrement;
                         }
                         else
@@ -986,25 +959,25 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                     }
                 }
 
-                if(bricks.get(i).bricktype == BrickType.ShortPaddleBrick && paddleWidth >= 51)
+                if(bricks.get(i).bricktype == BrickType.ShortPaddleBrick && paddle.Width >= 51)
                 {
-                    paddleWidth *= 0.9;
-                    paddleHitbox.setSize(paddleWidth, paddleHeight);
+                    paddle.Width *= 0.9;
+                    paddle.Hitbox.setSize(paddle.Width, paddle.Height);
                 }
                 if(bricks.get(i).bricktype == BrickType.FasterBall)
                 {
 
                 }
-                if(bricks.get(i).bricktype == BrickType.LongPaddleBrick && paddleWidth >= 200)
+                if(bricks.get(i).bricktype == BrickType.LongPaddleBrick && paddle.Width >= 200)
                 {
-                    paddleWidth *= 1.1;
-                    paddleHitbox.setSize(paddleWidth, paddleHeight);
+                    paddle.Width *= 1.1;
+                    paddle.Hitbox.setSize(paddle.Width, paddle.Height);
                     isLong = true;
                 }
 
                 if(bricks.get(i).bricktype == BrickType.PowerupBrick)
                 {
-                    ispowerball = true;
+                    ball.ispowerball = true;
                 }
 
                 if(bricks.get(i).bricktype == BrickType.HealthBrick)
@@ -1017,8 +990,8 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                     ball.Height--;
                     ball.Hitbox.width--;
                     ball.Hitbox.height--;
-                    paddleWidth -= 2;
-                    paddleHitbox.width -= 2;
+                    paddle.Width -= 2;
+                    paddle.Hitbox.width -= 2;
                 }
                 if (bricks.get(i).Layers <= 0 && bricks.get(i).bricktype != BrickType.IndestructableBrick)
                 {
@@ -1034,7 +1007,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             }
         }
 
-
+        paddle.Update(ball);
         repaint();
     }
 
@@ -1046,7 +1019,8 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             left = true;
             right = false;
         }
-        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE)
+        {
             if (left) {
                 ball.Xspeed = -Math.abs(ball.Xspeed);
             }
@@ -1076,13 +1050,13 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         }
         if(e.getKeyCode() == KeyEvent.VK_UP)
         {
-            if(ispowerball)
+            if(ball.ispowerball)
             {
-                ispowerball = false;
+                ball.ispowerball = false;
             }
             else
             {
-                ispowerball = true;
+                ball.ispowerball = true;
             }
         }
 

@@ -18,18 +18,21 @@ public class Main {
     public static boolean WaitToTeleport = false;
     public static Timer TeleportWaitTimer;
 
+    public static int ScreenWidth = 1000;
+    public static int ScreenHeight = 500;
+
 
     public static void main(String[] args) {
 
 
         JFrame forms = new JFrame();
-        forms.setSize(1000, 500);
+        forms.setSize(ScreenWidth, ScreenHeight);
         forms.setLayout(null);
 
 
         //make controls
         final DrawingPanel dpanel = new DrawingPanel();
-        dpanel.setSize(1000, 500);
+        dpanel.setSize(ScreenWidth, ScreenHeight);
         dpanel.setBackground(Color.BLACK);
         dpanel.setLocation(0, 0);
 

@@ -30,6 +30,8 @@ public class Brick {
     public int ColumnID;
     public int BrickGap = 0;
 
+    public boolean intersectingBall;
+
     //functions
     public Brick(int x, int y, int width, int height, int brickxspeed, int brickyspeed, Color tint , int LowBounceY, int HighBounceY, int layers) {
         X = x;
