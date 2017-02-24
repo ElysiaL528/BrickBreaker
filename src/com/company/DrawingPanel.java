@@ -13,12 +13,11 @@ import java.util.Random;
 
 /**
  * Created by ElysiaLopez on 10/9/2015.
- * TODO: Create Trampoline - Lava - Random Bricks || Scrolling Map || Be able to control where ball is launched || Work on pause function || Upside down mode
+ * TODO: Create Scrolling Map || Upside down mode? || Clean up & comment code
  * Bugs:
- * Have the intersecting logic internal to the corresponding brick class, rather than all in the drawing panel
  *
- * DONE:
- * Fixed ball positioning bug
+ * DONE
+ * Pause function
  */
 
 
@@ -47,6 +46,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
     boolean brickhit = false;
     boolean intersectingBrick = false;
     boolean FinishedLevel = false;
+    boolean isPaused = false;
 
     int specialCount = 0;
 
@@ -106,10 +106,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
 
     }
-    public void Pause()
-    {
 
-    }
     public void Reset() {
         brickX = 0;
         brickY = 0;
@@ -693,6 +690,11 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
             }
 
+        if(level == 18) //Scrolling level
+        {
+
+        }
+
         }
 
 
@@ -734,41 +736,39 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         }*/
         //test.Draw(g);
         for (int i = 0; i < bricks.size(); i++) {
-            if(level == 11 || level == 16)
-            {
+            if(!isPaused) {
+                if (level == 11 || level == 16) {
 
-                    if(bricks.get(i).bricktype == BrickType.DisappearingBrick) {
-                        if(!Main.disappear) {
+                    if (bricks.get(i).bricktype == BrickType.DisappearingBrick) {
+                        if (!Main.disappear) {
                             bricks.get(i).Draw(g);
                             bricks.get(i).Label(g);
                         }
-                    }
-                else {
+                    } else {
                         bricks.get(i).Draw(g);
                         bricks.get(i).Label(g);
                     }
-            }
-            else {
-                bricks.get(i).Draw(g);
-                bricks.get(i).Label(g);
-            }
-            if(level == 15)
-            {
+                } else {
+                    bricks.get(i).Draw(g);
+                    bricks.get(i).Label(g);
+                }
+                if (level == 15) {
 
-                if(bricks.get(i).bricktype == BrickType.TeleportationBrick) {
-                    if (!Main.WaitToTeleport) {
-                        for (int j = 0; j < bricks.size(); j++) {
-                            randomNum = gen.nextInt(7) * 130;
-                            bricks.get(j).X = randomNum;
-                            bricks.get(j).TopHitbox.x = randomNum;
-                            bricks.get(j).Hitbox.x = randomNum;
-                            randomNum = gen.nextInt(6) * 50;
-                            bricks.get(j).Y = randomNum;
-                            bricks.get(j).TopHitbox.y = randomNum;
-                            bricks.get(j).Hitbox.y = randomNum;
+                    if (bricks.get(i).bricktype == BrickType.TeleportationBrick) {
+                        if (!Main.WaitToTeleport) {
+                            for (int j = 0; j < bricks.size(); j++) {
+                                randomNum = gen.nextInt(7) * 130;
+                                bricks.get(j).X = randomNum;
+                                bricks.get(j).TopHitbox.x = randomNum;
+                                bricks.get(j).Hitbox.x = randomNum;
+                                randomNum = gen.nextInt(6) * 50;
+                                bricks.get(j).Y = randomNum;
+                                bricks.get(j).TopHitbox.y = randomNum;
+                                bricks.get(j).Hitbox.y = randomNum;
 
+                            }
+                            Main.WaitToTeleport = true;
                         }
-                        Main.WaitToTeleport = true;
                     }
                 }
             }
@@ -785,11 +785,18 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         g.setColor(Color.green);
         if (lives > 0 && !bricks.isEmpty()) {
             if (bricks.size() > specialCount) {
-                g.setColor(Color.green);
-                g.drawString(String.format("%d", score), 450, 330);
-
+                g.drawString(String.format("%d", score), 400, 330);
+                if(isPaused) {
+                    g.setColor(Color.red);
+                    font = new Font("Quartz MS", Font.PLAIN, 30);
+                    g.setFont(font);
+                    g.drawString("PAUSED", 450, 50);
+                }
             }
         }
+        g.setColor(Color.green);
+        font = new Font("Quartz MS", Font.PLAIN, 100);
+        g.setFont(font);
         if (bricks.isEmpty() || bricks.size() == specialCount) {
             isonpaddle = true;
             FinishedLevel = true;
@@ -820,44 +827,25 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
     public void Update() {
 
         //moving
-
-        /*if (right) {
-            PaddleX += paddleXspeed;
+        if(!isPaused) {
+            if (right) {
+                paddle.X += paddle.Xspeed;
+            }
+            if (left) {
+                paddle.X -= paddle.Xspeed;
+            }
+            if (isonpaddle) {
+                ball.X = paddle.X + (paddle.Width / 2) - (ball.Width / 2);
+                ball.Y = paddle.Y - ball.Height;
+            } else if (!isonpaddle) {
+                ball.X += ball.Xspeed;
+                ball.Y += ball.Yspeed;
+            }
         }
-        if (left) {
-            PaddleX -= paddleXspeed;
-        }*/
-        if (isonpaddle) {
-            ball.X = paddle.X + (paddle.Width / 2) - (ball.Width/2);
-            ball.Y = paddle.Y - ball.Height;
-        }
-
-        else if (!isonpaddle) {
-            ball.X += ball.Xspeed;
-            ball.Y += ball.Yspeed;
-        }
-
         ball.Hitbox.setLocation(ball.X, ball.Y);
         paddle.Hitbox.x = paddle.X;
-        /*
-        if(isonpaddle == true)
-        {
-            ballXspeed = 0;
-            ballYspeed = 0;
 
-        }
-
-        else if(isonpaddle == false)
-        {
-            ballXspeed = 1;
-            ballYspeed = -1;
-        }
-        */
-        if(autoplay)
-        {
-            paddle.X = ball.X;
-        }
-        if (ball.X >= 950) {
+        if (ball.X >= Main.ScreenWidth - 50) {
             ball.Xspeed = Math.abs(ball.Xspeed) * -1;
         }
         if (ball.X <= 0) {
@@ -880,16 +868,10 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             ball.Yspeed = Math.abs(ball.Yspeed);
         }
 
-        if (paddle.X + paddle.Width >= 970) {
-            paddle.X = 1000-paddle.Width-17;
-        }
-
-        if (paddle.X <= 0) {
-            paddle.X = 2;
-        }
         if (ball.Hitbox.intersects(paddle.Hitbox)) {
             ball.Yspeed = -Math.abs(ball.Yspeed);
         }
+
 
         for(Brick brick : bricks)
         {
@@ -900,7 +882,6 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
             if (ball.Hitbox.intersects(bricks.get(i).Hitbox))
             {
-
 
                 if(!bricks.get(i).intersectingBall) {
                     bricks.get(i).Layers--;
@@ -1012,6 +993,8 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
     }
 
     public void keyPressed(KeyEvent e) {
+
+        paddle.keyPressed(e);
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             right = true;
             left = false;
@@ -1060,6 +1043,16 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             }
         }
 
+        if(e.getKeyCode() == KeyEvent.VK_P)
+        {
+            if(isPaused)
+            isPaused = false;
+
+            else
+            isPaused = true;
+
+        }
+
         checkShortcutKeys(e);
 
     }
@@ -1086,8 +1079,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         quickAccessKeys.put(KeyEvent.VK_U, 16);
         quickAccessKeys.put(KeyEvent.VK_I, 17);
         quickAccessKeys.put(KeyEvent.VK_O, 18);
-        quickAccessKeys.put(KeyEvent.VK_P, 19);
-        quickAccessKeys.put(KeyEvent.VK_A, 20);
+        quickAccessKeys.put(KeyEvent.VK_A, 19);
 
         if(quickAccessKeys.containsKey(e.getKeyCode()))
         {
@@ -1097,7 +1089,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             Reset();
         }
 
-        if(e.getKeyCode() == KeyEvent.VK_NUMPAD9)
+       /* if(e.getKeyCode() == KeyEvent.VK_NUMPAD9)
         {
             if(!autoplay) {
                 autoplay = true;
@@ -1106,7 +1098,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             {
                 autoplay = false;
             }
-        }
+        }*/
     }
 
     public void keyReleased(KeyEvent e) {

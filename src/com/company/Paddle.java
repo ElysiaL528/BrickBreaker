@@ -2,7 +2,6 @@ package com.company;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 /**
  * Created by ElysiaLopez on 2/17/2017.
@@ -16,7 +15,9 @@ public class Paddle {
 
     public Rectangle Hitbox;
 
-    public boolean autoplay;
+    public boolean autoplay = false;
+    public boolean MoveLeft;
+    public boolean MoveRight;
 
     public Paddle(int x, int y, int width, int height)
     {
@@ -47,17 +48,35 @@ public class Paddle {
             X = ball.X;
         }
 
+        if(MoveLeft) {
+            X -= Xspeed;
+        }
+        if(MoveRight)
+        {
+            X += Xspeed;
+        }
+        if (X + Width >= Main.ScreenWidth - 30) {
+            X = 1000-Width-17;
+        }
+
+        if (X <= 0) {
+            X = 2;
+        }
+
     }
 
     public void keyPressed(KeyEvent e)
     {
-        if(e.getKeyCode() == KeyEvent.VK_LEFT)
-        {
-            X -= Xspeed;
+        if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+            MoveLeft = true;
         }
         if(e.getKeyCode() == KeyEvent.VK_RIGHT)
         {
-            X += Xspeed;
+            MoveRight = true;
+        }
+        if(e.getKeyCode() == KeyEvent.VK_NUMPAD9)
+        {
+            autoplay = true;
         }
     }
 
