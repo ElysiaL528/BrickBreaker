@@ -76,7 +76,12 @@ public class Paddle {
         }
         if(e.getKeyCode() == KeyEvent.VK_NUMPAD9)
         {
-            autoplay = true;
+            if(!autoplay) {
+                autoplay = true;
+            }
+            else{
+                autoplay = false;
+            }
         }
     }
 

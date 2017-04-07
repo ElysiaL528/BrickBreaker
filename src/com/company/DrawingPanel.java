@@ -13,7 +13,7 @@ import java.util.Random;
 
 /**
  * Created by ElysiaLopez on 10/9/2015.
- * TODO: Create Scrolling Map || Upside down mode? || Clean up & comment code
+ * TODO: Create Scrolling Map || Upside down mode? || Clean up & comment code || Bricks that shoot at the paddle
  * Bugs:
  *
  * DONE
@@ -690,12 +690,36 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
             }
 
-        if(level == 18) //Scrolling level
+        if(level == 18)
         {
+            int xSpeed = 0;
+            int ySpeed = 0;
+            int brickWidth = 120;
+            int brickHeight = 40;
+            int xBrickGap = 10;
+            int yBrickGap = 10;
+            int brickx = 500;
+            int brickY = 0;
+
+            for (int row = 0; row < 5; row++) {
+                for (int col = 0; col < 7; col++) {
+                        Brick newBrick = new Brick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, Color.green, 0, 0, 1);
+
+                        newBrick.RowID = row;
+                        newBrick.ColumnID = col;
+                        newBrick.BrickGap = xBrickGap;
+
+                        brickX += brickWidth + xBrickGap;
+
+                    bricks.add(newBrick);
+                }
+                brickY += brickHeight + yBrickGap;
+                brickX = 0;
+            }
+
 
         }
-
-        }
+    }
 
 
 
@@ -716,25 +740,6 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
         ball.Draw(g);
         paddle.Draw(g);
-
-        /*if (!ispowerball) {
-            g.drawOval(ballX, ballY, ballWidth, ballHeight);
-            g.drawOval(ballHitbox.x, ballHitbox.y, ballHitbox.width, ballHitbox.height);
-        } else{
-            g.fillOval(ballX, ballY, ballWidth, ballHeight);
-        }*/
-
-       /* if(!autoplay) {
-            g.setColor(Color.GREEN);
-            g.drawRect(PaddleX, PaddleY, paddleWidth, paddleHeight);
-            g.drawRect(paddleHitbox.x, paddleHitbox.y, paddleHitbox.width, paddleHitbox.height);
-        }
-        else{
-            g.setColor(Color.red);
-            g.drawRect(PaddleX, PaddleY, paddleWidth, paddleHeight);
-            g.drawRect(paddleHitbox.x, paddleHitbox.y, paddleHitbox.width, paddleHitbox.height);
-        }*/
-        //test.Draw(g);
         for (int i = 0; i < bricks.size(); i++) {
             if(!isPaused) {
                 if (level == 11 || level == 16) {
@@ -772,11 +777,6 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                     }
                 }
             }
-
-            /*if(ballHitbox.intersects(bricks.get(i).Hitbox) && bricks.get(i).bricktype == BrickType.TeleportationBrick)
-            {
-                bricks.get(i).Label(g);
-            }*/
         }
 
         g.setColor(Color.gray);
@@ -829,10 +829,30 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         //moving
         if(!isPaused) {
             if (right) {
-                paddle.X += paddle.Xspeed;
+              //  paddle.X += paddle.Xspeed;
+                if(level == 18)
+                {
+                    for(int i = 0; i < bricks.size(); i++)
+                    {
+                        if(bricks.get(1).X < Main.ScreenWidth)
+                        {
+                            bricks.get(i).X += paddle.Xspeed;
+                        }
+                    }
+                }
             }
             if (left) {
-                paddle.X -= paddle.Xspeed;
+               // paddle.X -= paddle.Xspeed;
+                if(level == 18)
+                {
+                    for(int i = 0; i < bricks.size(); i++)
+                    {
+                        if(bricks.get(1).X > 0)
+                        {
+                            bricks.get(i).X -= paddle.Xspeed;
+                        }
+                    }
+                }
             }
             if (isonpaddle) {
                 ball.X = paddle.X + (paddle.Width / 2) - (ball.Width / 2);
@@ -1088,17 +1108,6 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             isonpaddle = true;
             Reset();
         }
-
-       /* if(e.getKeyCode() == KeyEvent.VK_NUMPAD9)
-        {
-            if(!autoplay) {
-                autoplay = true;
-            }
-            else
-            {
-                autoplay = false;
-            }
-        }*/
     }
 
     public void keyReleased(KeyEvent e) {
