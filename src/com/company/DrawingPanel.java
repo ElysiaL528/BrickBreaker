@@ -13,8 +13,8 @@ import java.util.Random;
 
 /**
  * Created by ElysiaLopez on 10/9/2015.
- * TODO: Create Scrolling Map || Upside down mode? || Clean up & comment code || Bricks that shoot at the paddle
- * Bugs:
+ * TODO: Upside down mode? || Clean up & comment code || Bricks that shoot at the paddle
+ * Bugs: Fix scrolling in level 18 (the top row shifts every time it meets the borders
  *
  * DONE
  * Pause function
@@ -828,13 +828,13 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
         //moving
         if(!isPaused) {
-            if (right) {
-              //  paddle.X += paddle.Xspeed;
+           if (right) {
+                paddle.X += paddle.Xspeed;
                 if(level == 18)
                 {
                     for(int i = 0; i < bricks.size(); i++)
                     {
-                        if(bricks.get(1).X < Main.ScreenWidth)
+                        if(bricks.get(6).X + brickWidth< Main.ScreenWidth - 10)
                         {
                             bricks.get(i).X += paddle.Xspeed;
                         }
@@ -842,18 +842,32 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                 }
             }
             if (left) {
-               // paddle.X -= paddle.Xspeed;
+                paddle.X -= paddle.Xspeed;
                 if(level == 18)
                 {
                     for(int i = 0; i < bricks.size(); i++)
                     {
-                        if(bricks.get(1).X > 0)
+                        if(bricks.get(0).X > 0)
                         {
                             bricks.get(i).X -= paddle.Xspeed;
                         }
                     }
                 }
             }
+
+            //NEW GAME MODE??
+
+            /*if(right)
+            {
+                paddle.MoveRight = true;
+                paddle.MoveLeft = false;
+            }
+            if(left)
+            {
+                paddle.MoveLeft = true;
+                paddle.MoveRight = false;
+            }*/
+
             if (isonpaddle) {
                 ball.X = paddle.X + (paddle.Width / 2) - (ball.Width / 2);
                 ball.Y = paddle.Y - ball.Height;
@@ -1014,7 +1028,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
     public void keyPressed(KeyEvent e) {
 
-        paddle.keyPressed(e);
+
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             right = true;
             left = false;
@@ -1074,6 +1088,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         }
 
         checkShortcutKeys(e);
+        paddle.keyPressed(e);
 
     }
 

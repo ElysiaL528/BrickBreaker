@@ -11,7 +11,7 @@ public class Paddle {
     public int Y;
     public int Width;
     public int Height;
-    public int Xspeed = 15;
+    public int Xspeed = 1;
 
     public Rectangle Hitbox;
 
@@ -68,12 +68,15 @@ public class Paddle {
     public void keyPressed(KeyEvent e)
     {
         if(e.getKeyCode() == KeyEvent.VK_LEFT) {
-            MoveLeft = true;
+           // MoveLeft = true;
+            //MoveRight = false;
         }
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT)
+        else if(e.getKeyCode() == KeyEvent.VK_RIGHT)
         {
-            MoveRight = true;
+            //MoveRight = true;
+            //MoveLeft = false;
         }
+
         if(e.getKeyCode() == KeyEvent.VK_NUMPAD9)
         {
             if(!autoplay) {
