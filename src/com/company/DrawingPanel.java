@@ -16,8 +16,6 @@ import java.util.Random;
  * TODO: Upside down mode? || Clean up & comment code || Bricks that shoot at the paddle
  * Bugs: Fix scrolling in level 18 (the top row shifts every time it meets the borders
  *
- * DONE
- * Pause function
  */
 
 
@@ -85,15 +83,6 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         Timer timer = new Timer(16, this);
 
         Reset();
-
-        //test = new Brick(brickX,brickY,120,40,Color.GREEN);
-
-        /*
-
-       ;
-
-        brick.clear();
-        */
 
 
         timer.start();
@@ -829,12 +818,14 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         //moving
         if(!isPaused) {
            if (right) {
-                paddle.X += paddle.Xspeed;
+               if(paddle.X + paddle.Width + 25 < Main.ScreenWidth) {
+                   paddle.X += paddle.Xspeed;
+               }
                 if(level == 18)
                 {
                     for(int i = 0; i < bricks.size(); i++)
                     {
-                        if(bricks.get(6).X + brickWidth< Main.ScreenWidth - 10)
+                        if(bricks.get(6).X + brickWidth < Main.ScreenWidth - 10)
                         {
                             bricks.get(i).X += paddle.Xspeed;
                         }
@@ -842,7 +833,9 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                 }
             }
             if (left) {
-                paddle.X -= paddle.Xspeed;
+                if(paddle.X > 0) {
+                    paddle.X -= paddle.Xspeed;
+                }
                 if(level == 18)
                 {
                     for(int i = 0; i < bricks.size(); i++)
@@ -869,14 +862,18 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             }*/
 
             if (isonpaddle) {
+                ball.Xspeed = 0;
                 ball.X = paddle.X + (paddle.Width / 2) - (ball.Width / 2);
                 ball.Y = paddle.Y - ball.Height;
             } else if (!isonpaddle) {
-                ball.X += ball.Xspeed;
-                ball.Y += ball.Yspeed;
+
+                ball.Update();
             }
         }
+        //ball.Update();
         ball.Hitbox.setLocation(ball.X, ball.Y);
+
+
         paddle.Hitbox.x = paddle.X;
 
         if (ball.X >= Main.ScreenWidth - 50) {
@@ -1032,18 +1029,24 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             right = true;
             left = false;
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+        }
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             left = true;
             right = false;
         }
         if (e.getKeyCode() == KeyEvent.VK_SPACE)
         {
+            if(isonpaddle) {
+                ball.Xspeed = 10;
+            }
             if (left) {
                 ball.Xspeed = -Math.abs(ball.Xspeed);
             }
             if (right) {
                 ball.Xspeed = Math.abs(ball.Xspeed);
             }
+
+
             isonpaddle = false;
 
         }
@@ -1131,6 +1134,10 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         }
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             left = false;
+        }
+        if(e.getKeyCode() == KeyEvent.VK_NUMPAD9)
+        {
+            //paddle.autoplay = !paddle.autoplay;
         }
     }
 

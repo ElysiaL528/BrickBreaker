@@ -11,7 +11,7 @@ public class Paddle {
     public int Y;
     public int Width;
     public int Height;
-    public int Xspeed = 1;
+    public int Xspeed = 12;
 
     public Rectangle Hitbox;
 
@@ -45,38 +45,22 @@ public class Paddle {
     {
         if(autoplay)
         {
-            X = ball.X;
+            X = ball.X - ball.Width;
+            if(X + Width + 30 > Main.ScreenWidth)
+            {
+                X = Main.ScreenWidth - Width;
+            }
+            else if(X < 0)
+            {
+                X = 2;
+            }
         }
 
-        if(MoveLeft) {
-            X -= Xspeed;
-        }
-        if(MoveRight)
-        {
-            X += Xspeed;
-        }
-        if (X + Width >= Main.ScreenWidth - 30) {
-            X = 1000-Width-17;
-        }
-
-        if (X <= 0) {
-            X = 2;
-        }
 
     }
 
     public void keyPressed(KeyEvent e)
     {
-        if(e.getKeyCode() == KeyEvent.VK_LEFT) {
-           // MoveLeft = true;
-            //MoveRight = false;
-        }
-        else if(e.getKeyCode() == KeyEvent.VK_RIGHT)
-        {
-            //MoveRight = true;
-            //MoveLeft = false;
-        }
-
         if(e.getKeyCode() == KeyEvent.VK_NUMPAD9)
         {
             if(!autoplay) {
@@ -85,6 +69,7 @@ public class Paddle {
             else{
                 autoplay = false;
             }
+
         }
     }
 

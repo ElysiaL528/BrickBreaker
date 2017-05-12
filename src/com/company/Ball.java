@@ -48,22 +48,22 @@ public class Ball {
 
         if(Y <= 0)
         {
-            Y = Math.abs(Y);
+            Yspeed = Math.abs(Yspeed);
         }
 
-        if(Y >= Main.ScreenHeight - Height)
+        if(Y + Height >= Main.ScreenHeight )
         {
-            Y = -Math.abs(Y);
+            Yspeed = -Math.abs(Yspeed);
         }
 
         if(X <= 0)
         {
-            X = Math.abs(X);
+            Xspeed = Math.abs(Xspeed);
         }
 
-        if(X > Main.ScreenWidth + Width)
+        if(X + Width > Main.ScreenWidth )
         {
-            X = -Math.abs(X);
+            Xspeed = -Math.abs(Xspeed);
         }
         //
     }
