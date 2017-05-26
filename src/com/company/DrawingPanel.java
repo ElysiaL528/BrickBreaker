@@ -14,7 +14,7 @@ import java.util.Random;
 /**
  * Created by ElysiaLopez on 10/9/2015.
  * TODO: Upside down mode? || Clean up & comment code || Bricks that shoot at the paddle
- * Bugs: Fix scrolling in level 18 (the top row shifts every time it meets the borders
+ * Bugs: Finish adding each level to list 'levels' & fixed the hardcoded values in paint function|| Fix scrolling in level 18 (the top row shifts every time it meets the borders
  *
  */
 
@@ -45,6 +45,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
     boolean intersectingBrick = false;
     boolean FinishedLevel = false;
     boolean isPaused = false;
+    boolean isScrollingLevel = false;
 
     int specialCount = 0;
 
@@ -55,9 +56,9 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
     int TeleportXmin = 0;
 
 
+    ArrayList<Brick> bricks = new ArrayList<>();
 
-
-    ArrayList<Brick> bricks = new ArrayList<Brick>();
+    ArrayList<Level> levels = new ArrayList<>();
 
     //ArrayList<Brick> IndestructableBrick = new ArrayList<Brick>();
 
@@ -135,25 +136,36 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         }
         if (level == 1) {
             score = 0;
-            for (int j = 0; j < 2; j++) {
-                for (int i = 0; i < 8; i++) {
+            int rows = 2;
+            int column = 8;
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < column; col++) {
                     bricks.add(new Brick(brickX, brickY, 120, 40, 0, 0, Color.GREEN, 43, 0, 1));
                     brickX += 123;
                 }
                 brickY += 43;
                 brickX = 0;
             }
+            Level newLevel = new Level(rows, column, false, false, false);
+
+            levels.add(newLevel);
         } else if (level == 2) {
             score = 16;
-            for (int j = 0; j < 6; j++) {
+            int rows = 6;
+            int columns = 8;
+            for (int j = 0; j < rows; j++) {
 
-                for (int i = 0; i < 8; i++) {
+                for (int i = 0; i < columns; i++) {
                     bricks.add(new Brick(brickX, brickY, 120, 40, 0, 0, Color.GREEN, 43, 0, 1));
                     brickX += 123;
                 }
                 brickY += 43;
                 brickX = 0;
             }
+            Level newLevel = new Level(rows, columns, false, false, false);
+
+            levels.add(newLevel);
+
         } else if (level == 3) {
             score = 64;
             ball.Width = 50;
@@ -164,32 +176,43 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             paddle.Width = 150;
             paddle.Hitbox.width = paddle.Width;
             paddle.Hitbox.height = paddle.Height;
-            for (int j = 0; j < 4; j++) {
-                for (int i = 0; i < 8; i++) {
+            int rows = 4;
+            int columns = 8;
+
+            for (int j = 0; j < rows; j++) {
+                for (int i = 0; i < columns; i++) {
                     bricks.add(new ShrinkBPBrick(brickX, brickY, 120, 40, 0, 0, Color.GREEN, 43, 0, 1));
                     brickX += 123;
                 }
                 brickY += 43;
                 brickX = 0;
             }
+            Level newLevel = new Level(rows, columns, false, false, false);
+
+            levels.add(newLevel);
         } else if (level == 4) {
             score = 96;
-            ball.Width = 60;
-            ball.Height = 60;
+            ball.Width = 50;
+            ball.Height = 50;
             ball.Hitbox.width = ball.Width;
             ball.Hitbox.height = ball.Height;
             paddle.Height = 15;
             paddle.Width = 150;
             paddle.Hitbox.width = paddle.Width;
             paddle.Hitbox.height = paddle.Height;
-            for (int j = 0; j < 1; j++) {
-                for (int i = 0; i < 8; i++) {
+            int rows = 1;
+            int columns = 8;
+            for (int j = 0; j < rows; j++) {
+                for (int i = 0; i < columns; i++) {
                     bricks.add(new ShrinkBPBrick(brickX, brickY, 120, 40, 0, 0, Color.GREEN, 43, 0, 1));
                     brickX += 123;
                 }
                 brickY += 43;
                 brickX = 0;
             }
+            Level newLevel = new Level(rows, columns, false, false, false);
+
+            levels.add(newLevel);
         } else if (level == 5) {
             score = 104;
             ball.Width = 50;
@@ -206,10 +229,12 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             int brickHeight = 40;
             int xBrickGap = 10;
             int yBrickGap = 5;
+            int rows = 6;
+            int columns = 5;
 
 
-            for (int row = 0; row < 6; row++) {
-                for (int col = 0; col < 5; col++) {
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < columns; col++) {
                     Brick newBrick = new Brick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, columnColors[col], 43, 0, 1);
                     newBrick.RowID = row;
                     newBrick.ColumnID = col;
@@ -222,6 +247,9 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                 brickY += brickHeight + yBrickGap;
                 brickX = 0;
             }
+            Level newLevel = new Level(rows, columns, false, false, false);
+
+            levels.add(newLevel);
         } else if (level == 6) {
             score = 134;
             int xSpeed = 10;
@@ -230,9 +258,11 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             int brickHeight = 40;
             int xBrickGap = 10;
             int yBrickGap = 5;
+            int rows = 6;
+            int columns = 5;
 
-            for (int row = 0; row < 6; row++) {
-                for (int col = 0; col < 5; col++) {
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < columns; col++) {
                     Brick newBrick = new Brick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, columnColors[col], 43, 0, 1);
                     newBrick.RowID = row;
                     newBrick.ColumnID = col;
@@ -245,6 +275,9 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                 brickY += brickHeight + yBrickGap;
                 brickX = 0;
             }
+            Level newLevel = new Level(rows, columns, false, false, false);
+
+            levels.add(newLevel);
         } else if (level == 7) {
             score = 164;
             int xSpeed = 2;
@@ -253,9 +286,11 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             int brickHeight = 40;
             int xBrickGap = 10;
             int yBrickGap = 10;
+            int rows = 3;
+            int columns = 7;
 
-            for (int row = 0; row < 3; row++) {
-                for (int col = 0; col < 7; col++) {
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < columns; col++) {
                     Brick newBrick = new Brick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, columnColors[col], 300, 0, 1);
                     newBrick.RowID = row;
                     newBrick.ColumnID = col;
@@ -268,6 +303,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                 brickY += brickHeight + yBrickGap;
                 brickX = 0;
             }
+            Level newLevel = new Level(rows, columns, false, false, false);
         } else if (level == 8) {
             score = 185;
             int xSpeed = 0;
@@ -276,9 +312,11 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             int brickHeight = 40;
             int xBrickGap = 10;
             int yBrickGap = 10;
+            int rows = 3;
+            int columns = 7;
 
-            for (int row = 0; row < 3; row++) {
-                for (int col = 0; col < 7; col++) {
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < columns; col++) {
                     Brick newBrick = new Brick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, columnColors[col], 0, 0, 5);
                     newBrick.RowID = row;
                     newBrick.ColumnID = col;
@@ -297,6 +335,9 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                 brickX = 0;
                 layers = 7;
             }
+            Level newLevel = new Level(rows, columns, false, false, false);
+
+            levels.add(newLevel);
         } else if (level == 9) {
             score = 285;
             int xSpeed = 3;
@@ -365,7 +406,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
             }
         } else if (level == 11) {
-            Main.disappearTimer =  new Timer(5000, new ActionListener() {
+            Main.disappearTimer = new Timer(5000, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
                     Main.disappear = !Main.disappear;
@@ -404,8 +445,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
             }
             Main.disappearTimer.start();
-        }
-        else if (level == 12) {
+        } else if (level == 12) {
             int xSpeed = 0;
             int ySpeed = 0;
             int brickWidth = 120;
@@ -437,9 +477,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                 brickX = 0;
 
             }
-        }
-        else if(level == 13)
-        {
+        } else if (level == 13) {
             int xSpeed = 0;
             int ySpeed = 0;
             int brickWidth = 120;
@@ -471,9 +509,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                 brickX = 0;
 
             }
-        }
-        else if(level == 14)
-        {
+        } else if (level == 14) {
             int xSpeed = 0;
             int ySpeed = 0;
             int brickWidth = 120;
@@ -506,8 +542,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
             }
         }
-        if(level == 15)
-        {
+        if (level == 15) {
             int xSpeed = 0;
             int ySpeed = 0;
             int brickWidth = 120;
@@ -537,8 +572,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             //Main.TeleportTimer.start();
             Main.TeleportWaitTimer.start();
         }
-        if(level == 16)
-        {
+        if (level == 16) {
             int xSpeed = 0;
             int ySpeed = 0;
             int brickWidth = 120;
@@ -548,12 +582,13 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             int brickx = 500;
             int brickY = 0;
 
+
             BrickType[] brickTypeArray = {BrickType.DisappearingBrick, BrickType.HealthBrick, BrickType.Brick, BrickType.LongPaddleBrick, BrickType.ShortPaddleBrick};
 
             for (int row = 0; row < 5; row++) {
                 for (int col = 0; col < 7; col++) {
 
-                    if(row == 0 && col == 0) {
+                    if (row == 0 && col == 0) {
                         Brick newBrick = new PowerupBrick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, Color.green, 0, 0, 1);
                         newBrick.RowID = row;
                         newBrick.ColumnID = col;
@@ -563,8 +598,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                         brickX += xBrickGap;
 
                         bricks.add(newBrick);
-                    }
-                    else {
+                    } else {
                         Random random = new Random();
 
 
@@ -572,48 +606,33 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
                         newBrick.bricktype = brickTypeArray[random.nextInt(brickTypeArray.length)];
 
-                        if (newBrick.bricktype == BrickType.DisappearingBrick)
-                        {
+                        if (newBrick.bricktype == BrickType.DisappearingBrick) {
                             newBrick.isDisappearing = true;
-                        }
-                        else
-                        {
+                        } else {
                             newBrick.isDisappearing = false;
                         }
 
-                        if (newBrick.bricktype == BrickType.HealthBrick)
-                        {
+                        if (newBrick.bricktype == BrickType.HealthBrick) {
                             newBrick.isHealth = true;
-                        }
-                        else
-                        {
+                        } else {
                             newBrick.isHealth = false;
                         }
 
-                        if (newBrick.bricktype == BrickType.ShortPaddleBrick)
-                        {
+                        if (newBrick.bricktype == BrickType.ShortPaddleBrick) {
                             newBrick.isShortPaddle = true;
-                        }
-                        else
-                        {
+                        } else {
                             newBrick.isShortPaddle = false;
                         }
 
-                        if (newBrick.bricktype == BrickType.LongPaddleBrick)
-                        {
+                        if (newBrick.bricktype == BrickType.LongPaddleBrick) {
                             newBrick.isLongPaddle = true;
-                        }
-                        else
-                        {
+                        } else {
                             newBrick.isLongPaddle = false;
                         }
 
-                        if (newBrick.bricktype == BrickType.Brick)
-                        {
+                        if (newBrick.bricktype == BrickType.Brick) {
                             newBrick.isNormal = true;
-                        }
-                        else
-                        {
+                        } else {
                             newBrick.isNormal = false;
                         }
 
@@ -627,15 +646,14 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                         bricks.add(newBrick);
 
                     }
-                    }
-                brickY += brickHeight + yBrickGap;
-                brickX = 0;
                 }
                 brickY += brickHeight + yBrickGap;
                 brickX = 0;
             }
-        if(level == 17)
-        {
+            brickY += brickHeight + yBrickGap;
+            brickX = 0;
+        }
+        if (level == 17) {
             int xSpeed = 0;
             int ySpeed = 0;
             int brickWidth = 120;
@@ -648,7 +666,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
             for (int row = 0; row < 5; row++) {
                 for (int col = 0; col < 7; col++) {
 
-                    if(row == 0) {
+                    if (row == 0) {
                         Brick newBrick = new FasterBallBrick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, Color.red, 0, 0, 1);
 
 
@@ -659,8 +677,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                         brickX += brickWidth + xBrickGap;
 
                         bricks.add(newBrick);
-                    }
-                    else{
+                    } else {
                         Brick newBrick = new Brick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, Color.green, 0, 0, 1);
 
                         newBrick.RowID = row;
@@ -672,15 +689,14 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                         bricks.add(newBrick);
                     }
 
-                    }
+                }
                 brickY += brickHeight + yBrickGap;
                 brickX = 0;
-                }
-
             }
 
-        if(level == 18)
-        {
+        }
+
+        if (level == 18) {
             int xSpeed = 0;
             int ySpeed = 0;
             int brickWidth = 120;
@@ -692,13 +708,13 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
             for (int row = 0; row < 5; row++) {
                 for (int col = 0; col < 7; col++) {
-                        Brick newBrick = new Brick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, Color.green, 0, 0, 1);
+                    Brick newBrick = new Brick(brickX, brickY, brickWidth, brickHeight, xSpeed, ySpeed, Color.green, 0, 0, 1);
 
-                        newBrick.RowID = row;
-                        newBrick.ColumnID = col;
-                        newBrick.BrickGap = xBrickGap;
+                    newBrick.RowID = row;
+                    newBrick.ColumnID = col;
+                    newBrick.BrickGap = xBrickGap;
 
-                        brickX += brickWidth + xBrickGap;
+                    brickX += brickWidth + xBrickGap;
 
                     bricks.add(newBrick);
                 }
@@ -709,7 +725,6 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
 
         }
     }
-
 
 
 //specialCount = 0;
@@ -730,15 +745,36 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
         ball.Draw(g);
         paddle.Draw(g);
         for (int i = 0; i < bricks.size(); i++) {
-            if(!isPaused) {
-                if (level == 11 || level == 16) {
+            if (!isPaused) {
 
-                    if (bricks.get(i).bricktype == BrickType.DisappearingBrick) {
-                        if (!Main.disappear) {
+                for (Level level : levels) {
+                    if (level.isScrollingLevel)
+                    {
+
+                    }
+                    if (level.hasDisappearingBricks) {
+                        if (bricks.get(i).bricktype == BrickType.DisappearingBrick) {
+                            if (!Main.disappear) {
+                                bricks.get(i).Draw(g);
+                                bricks.get(i).Label(g);
+                            }
+                        } else {
                             bricks.get(i).Draw(g);
                             bricks.get(i).Label(g);
                         }
-                    } else {
+                    }
+                    if(level.hasRandomBricks)
+                    {
+
+                    }
+                }
+            }
+
+
+            if (level == 11 || level == 16) {
+
+                if (bricks.get(i).bricktype == BrickType.DisappearingBrick) {
+                    if (!Main.disappear) {
                         bricks.get(i).Draw(g);
                         bricks.get(i).Label(g);
                     }
@@ -746,23 +782,26 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
                     bricks.get(i).Draw(g);
                     bricks.get(i).Label(g);
                 }
-                if (level == 15) {
+            } else {
+                bricks.get(i).Draw(g);
+                bricks.get(i).Label(g);
+            }
+            if (level == 15) {
 
-                    if (bricks.get(i).bricktype == BrickType.TeleportationBrick) {
-                        if (!Main.WaitToTeleport) {
-                            for (int j = 0; j < bricks.size(); j++) {
-                                randomNum = gen.nextInt(7) * 130;
-                                bricks.get(j).X = randomNum;
-                                bricks.get(j).TopHitbox.x = randomNum;
-                                bricks.get(j).Hitbox.x = randomNum;
-                                randomNum = gen.nextInt(6) * 50;
-                                bricks.get(j).Y = randomNum;
-                                bricks.get(j).TopHitbox.y = randomNum;
-                                bricks.get(j).Hitbox.y = randomNum;
+                if (bricks.get(i).bricktype == BrickType.TeleportationBrick) {
+                    if (!Main.WaitToTeleport) {
+                        for (int j = 0; j < bricks.size(); j++) {
+                            randomNum = gen.nextInt(7) * 130;
+                            bricks.get(j).X = randomNum;
+                            bricks.get(j).TopHitbox.x = randomNum;
+                            bricks.get(j).Hitbox.x = randomNum;
+                            randomNum = gen.nextInt(6) * 50;
+                            bricks.get(j).Y = randomNum;
+                            bricks.get(j).TopHitbox.y = randomNum;
+                            bricks.get(j).Hitbox.y = randomNum;
 
-                            }
-                            Main.WaitToTeleport = true;
                         }
+                        Main.WaitToTeleport = true;
                     }
                 }
             }
@@ -814,7 +853,7 @@ public class DrawingPanel extends JPanel implements ActionListener, KeyListener 
     }
 
     public void Update() {
-
+        int BricksInRow = 6; //Have this number built into the class instead of hardcoding it
         //moving
         if(!isPaused) {
            if (right) {
